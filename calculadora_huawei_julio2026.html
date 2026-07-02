@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora Comisional Huawei — Julio 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C0392B; --red-light: #FADBD8; --red-mid: #E74C3C; --red-dark: #922B21;
+    --dark: #1A1A2E; --mid: #4A4A6A; --muted: #8888AA; --border: #E8E8F0;
+    --bg: #F7F7FB; --white: #FFFFFF;
+    --green: #1A7A4A; --green-light: #E6F7EE;
+    --blue: #1A4A7A; --blue-light: #E6EEF7;
+    --purple: #6C3483; --purple-light: #F0E6F7;
+    --sm-color:#C0392B; --we-color:#1A4A7A; --ea-color:#1A7A4A; --tb-color:#6C3483;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--dark); min-height: 100vh; line-height: 1.5; }
+
+  .topbar {
+    background: var(--red); color: #fff; padding: 0 2rem; height: 56px;
+    display: flex; align-items: center; gap: 14px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 16px rgba(192,57,43,0.25);
+  }
+  .topbar-logo { width:32px;height:32px;background:rgba(255,255,255,0.18);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+  .topbar-logo svg { width:20px;height:20px; }
+  .topbar-title { font-size:15px;font-weight:600;letter-spacing:-0.01em; }
+  .topbar-sub { font-size:12px;opacity:0.75;margin-top:1px; }
+  .topbar-right { margin-left:auto;display:flex;align-items:center;gap:10px; }
+  .topbar-badge { background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500; }
+  .topbar-badge.gold { background:rgba(255,255,255,0.92);color:var(--red); }
+
+  .page { max-width:980px;margin:0 auto;padding:2rem 1.5rem 4rem; }
+
+  /* CANAL SELECTOR */
+  .canal-selector {
+    display:flex;gap:0;margin-bottom:1.5rem;border-radius:12px;overflow:hidden;
+    border:1.5px solid var(--border);background:var(--white);
+  }
+  .canal-btn {
+    flex:1;padding:14px 20px;border:none;background:transparent;cursor:pointer;
+    font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--muted);
+    transition:all 0.18s;display:flex;flex-direction:column;align-items:center;gap:3px;
+  }
+  .canal-btn .cb-label { font-size:14px;font-weight:600; }
+  .canal-btn .cb-sub { font-size:11px;font-weight:400;opacity:0.7; }
+  .canal-btn:first-child { border-right:1.5px solid var(--border); }
+  .canal-btn.active { background:var(--red);color:#fff; }
+  .canal-btn.active .cb-sub { opacity:0.8; }
+
+  .mega-banner {
+    background:linear-gradient(135deg,var(--red-dark) 0%,var(--red) 60%,var(--red-mid) 100%);
+    border-radius:14px;padding:1.25rem 1.5rem;color:#fff;
+    display:flex;align-items:center;gap:16px;margin-bottom:1.5rem;
+    position:relative;overflow:hidden;
+  }
+  .mega-banner::before { content:'';position:absolute;right:-20px;top:-20px;width:120px;height:120px;background:rgba(255,255,255,0.06);border-radius:50%; }
+  .mega-banner::after { content:'';position:absolute;right:30px;bottom:-30px;width:80px;height:80px;background:rgba(255,255,255,0.05);border-radius:50%; }
+  .mega-star { font-size:28px;flex-shrink:0;position:relative;z-index:1; }
+  .mega-text { position:relative;z-index:1; }
+  .mega-text strong { font-size:14px;font-weight:600;display:block;margin-bottom:2px; }
+  .mega-text span { font-size:12px;opacity:0.88; }
+
+  .info-card { background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.5rem; }
+  .info-card h2 { font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:1rem; }
+  .info-row { display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px; }
+  @media(max-width:600px){.info-row{grid-template-columns:1fr;}}
+  .info-field label { display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em; }
+  .info-field input { width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--dark);background:var(--bg);outline:none;transition:border-color 0.15s,box-shadow 0.15s; }
+  .info-field input:focus { border-color:var(--red);box-shadow:0 0 0 3px rgba(192,57,43,0.1);background:#fff; }
+
+  .summary-strip { display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem; }
+  @media(max-width:600px){.summary-strip{grid-template-columns:1fr 1fr;}}
+  .sum-card { background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;transition:transform 0.1s; }
+  .sum-card:hover { transform:translateY(-1px); }
+  .sum-card.grand { background:var(--red);border-color:var(--red); }
+  .sc-label { font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:6px; }
+  .sum-card.grand .sc-label { color:rgba(255,255,255,0.75); }
+  .sc-val { font-size:20px;font-weight:600;color:var(--dark);font-family:'DM Mono',monospace; }
+  .sum-card.grand .sc-val { color:#fff; }
+  .sc-units { font-size:11px;color:var(--muted);margin-top:3px; }
+  .sum-card.grand .sc-units { color:rgba(255,255,255,0.6); }
+
+  .cat-section { background:var(--white);border:1px solid var(--border);border-radius:14px;margin-bottom:1rem;overflow:hidden; }
+  .cat-header { padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;transition:opacity 0.1s; }
+  .cat-header:hover { opacity:0.9; }
+  .cat-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+  .cat-name { font-size:13px;font-weight:600;color:#fff;flex:1; }
+  .cat-total-lbl { font-size:11px;font-weight:500;color:rgba(255,255,255,0.75);margin-right:6px; }
+  .cat-total-val { font-size:14px;font-weight:700;color:#fff;font-family:'DM Mono',monospace; }
+  .cat-chevron { font-size:11px;color:rgba(255,255,255,0.7);transition:transform 0.2s; }
+
+  .prod-table { width:100%;border-collapse:collapse; }
+  .col-hdr { font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;padding:8px 18px;background:var(--bg);border-bottom:1px solid var(--border);text-align:left; }
+  .col-hdr:nth-child(2),.col-hdr:nth-child(3),.col-hdr:nth-child(4){text-align:center;}
+  .col-hdr:last-child{text-align:right;}
+  .prod-row { border-bottom:1px solid var(--border);transition:background 0.1s; }
+  .prod-row:last-child { border-bottom:none; }
+  .prod-row:hover { background:var(--bg); }
+  .prod-row td { padding:10px 18px;vertical-align:middle; }
+  .prod-name-cell { font-size:13px;color:var(--dark); }
+  .prod-name-cell.premium { font-weight:600; }
+  .prod-name-cell .excl-badge { display:inline-block;font-size:9px;font-weight:700;background:#FEF3C7;color:#92400E;border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle; }
+  .prod-inc-cell { font-size:13px;font-family:'DM Mono',monospace;font-weight:500;text-align:center; }
+  .prod-tag { display:inline-block;font-size:10px;font-weight:600;border-radius:4px;padding:2px 6px;text-align:center; }
+  .tag-active { background:var(--green-light);color:var(--green); }
+  .units-cell { text-align:center; }
+  .units-input { width:72px;border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:14px;font-weight:600;font-family:'DM Mono',monospace;text-align:center;background:#FFFDE7;color:#5D4037;outline:none;transition:border-color 0.15s,box-shadow 0.15s; }
+  .units-input:focus { border-color:var(--red);box-shadow:0 0 0 3px rgba(192,57,43,0.1);background:#fff; }
+  .units-input.has-value { background:var(--green-light);color:var(--green);border-color:#A9DFBF; }
+  .total-cell { text-align:right;font-size:13px;font-weight:600;font-family:'DM Mono',monospace;color:var(--muted); }
+  .total-cell.has-value { color:var(--green); }
+
+  .actions-bar { display:flex;gap:10px;align-items:center;margin-top:1.5rem;flex-wrap:wrap; }
+  .btn { padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;border:1.5px solid transparent;display:inline-flex;align-items:center;gap:6px; }
+  .btn-ghost { background:var(--white);border-color:var(--border);color:var(--mid); }
+  .btn-ghost:hover { border-color:var(--red);color:var(--red); }
+  .btn-primary { background:var(--red);color:#fff;border-color:var(--red); }
+  .btn-primary:hover { background:var(--red-dark); }
+  .btn-green { background:var(--green);color:#fff;border-color:var(--green); }
+  .btn-green:hover { opacity:0.9; }
+
+  .modal-overlay { display:none;position:fixed;inset:0;background:rgba(26,26,46,0.55);z-index:200;align-items:center;justify-content:center;padding:1.5rem; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--white);border-radius:16px;padding:2rem;width:100%;max-width:520px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(26,26,46,0.2); }
+  .modal h2 { font-size:18px;font-weight:600;margin-bottom:0.25rem; }
+  .modal-sub { font-size:13px;color:var(--muted);margin-bottom:1.5rem; }
+  .modal-section { margin-bottom:1.25rem; }
+  .modal-section h3 { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:8px; }
+  .modal-row { display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bg);font-size:13px; }
+  .modal-row:last-child { border-bottom:none; }
+  .mr-name { color:var(--dark);flex:1; }
+  .mr-units { color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;margin:0 12px; }
+  .mr-total { font-family:'DM Mono',monospace;font-weight:600;color:var(--green); }
+  .modal-grand { display:flex;justify-content:space-between;align-items:center;background:var(--red);border-radius:10px;padding:14px 16px;margin-top:1rem; }
+  .mg-label { font-size:13px;font-weight:600;color:rgba(255,255,255,0.85); }
+  .mg-val { font-size:22px;font-weight:700;color:#fff;font-family:'DM Mono',monospace; }
+  .modal-close { float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1; }
+  .modal-actions { display:flex;gap:8px;margin-top:1.25rem; }
+
+  .footer { text-align:center;font-size:11px;color:var(--muted);margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border); }
+
+  @media print { .topbar{position:relative;} .actions-bar,.canal-selector,.modal-overlay{display:none!important;} }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M12 2.5C9 2.5 6.3 4.2 4.8 7L12 21.5L19.2 7C17.7 4.2 15 2.5 12 2.5Z" fill="white" opacity="0.95"/>
+      <path d="M4.8 7C3.2 10 3.5 13.8 5.5 16.8L12 21.5L4.8 7Z" fill="white" opacity="0.55"/>
+      <path d="M19.2 7C20.8 10 20.5 13.8 18.5 16.8L12 21.5L19.2 7Z" fill="white" opacity="0.75"/>
+    </svg>
+  </div>
+  <div>
+    <div class="topbar-title">Huawei Colombia — Game Changers</div>
+    <div class="topbar-sub">Calculadora comisional</div>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-badge">Julio 2026</span>
+    <span class="topbar-badge gold">★ Desde unidad 1</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- CANAL SELECTOR -->
+  <div class="canal-selector">
+    <button class="canal-btn active" id="btn-om" onclick="setCanal('OM')">
+      <span class="cb-label">Open Market</span>
+      <span class="cb-sub">Alkosto · Falabella · Alkomprar · Ktronix</span>
+    </button>
+    <button class="canal-btn" id="btn-claro" onclick="setCanal('CLARO')">
+      <span class="cb-label">Claro</span>
+      <span class="cb-sub">Canal operador</span>
+    </button>
+  </div>
+
+  <!-- MEGA PLUS -->
+  <div class="mega-banner">
+    <div class="mega-star">★</div>
+    <div class="mega-text">
+      <strong>Mega plus Huawei: incentivo desde la primera unidad vendida</strong>
+      <span>Sin umbrales, sin mínimos. Cada venta del mes genera comisión — desde el día 1.</span>
+    </div>
+  </div>
+
+  <!-- PROMOTOR INFO -->
+  <div class="info-card">
+    <h2>Datos del promotor</h2>
+    <div class="info-row">
+      <div class="info-field"><label>Nombre</label><input type="text" id="inp-nombre" placeholder="Ej. Carlos Pérez" /></div>
+      <div class="info-field"><label>Canal</label><input type="text" id="inp-canal" placeholder="Ej. Alkosto, Claro…" /></div>
+      <div class="info-field"><label>Punto de venta</label><input type="text" id="inp-pdv" placeholder="Ej. Alkosto 68" /></div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-strip">
+    <div class="sum-card"><div class="sc-label" style="color:var(--sm-color)">Smartphones</div><div class="sc-val" id="sum-sp">$0</div><div class="sc-units" id="sun-sp">0 unid.</div></div>
+    <div class="sum-card"><div class="sc-label" style="color:var(--we-color)">Wearables</div><div class="sc-val" id="sum-we">$0</div><div class="sc-units" id="sun-we">0 unid.</div></div>
+    <div class="sum-card"><div class="sc-label" style="color:var(--ea-color)">Earphones + Tab</div><div class="sc-val" id="sum-et">$0</div><div class="sc-units" id="sun-et">0 unid.</div></div>
+    <div class="sum-card grand"><div class="sc-label">Total incentivos</div><div class="sc-val" id="sum-total">$0</div><div class="sc-units" id="sun-total">0 unidades</div></div>
+  </div>
+
+  <div id="cat-container"></div>
+
+  <div class="actions-bar">
+    <button class="btn btn-ghost" onclick="resetAll()">↺ Reiniciar</button>
+    <button class="btn btn-primary" onclick="openSummary()">Ver resumen completo</button>
+    <button class="btn btn-green" onclick="window.print()">🖨 Imprimir</button>
+  </div>
+
+  <div class="footer">
+    Calculadora comisional Huawei Colombia — Julio 2026 &nbsp;·&nbsp; Game Changers &nbsp;·&nbsp; Incentivo desde la primera unidad
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    <h2>Resumen de incentivos</h2>
+    <div class="modal-sub" id="modal-sub">Julio 2026</div>
+    <div id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="document.getElementById('modal').classList.remove('open')">Cerrar</button>
+      <button class="btn btn-primary" onclick="copySummary()">📋 Copiar resumen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CATÁLOGO POR CANAL ────────────────────────────────────────────────────────
+const CATALOG = {
+  OM: [
+    { id:"sp", label:"Smartphones", color:"#C0392B", products:[
+      {name:"HUAWEI Mate X6",             inc:140000, premium:true},
+      {name:"HUAWEI Pura 80 Ultra",       inc:100000, premium:true},
+      {name:"HUAWEI Mate 80 Pro",         inc:90000,  premium:true},
+      {name:"HUAWEI Pura 80 Pro",         inc:80000},
+      {name:"HUAWEI Pura 80",             inc:60000},
+      {name:"HUAWEI nova 15 max",         inc:55000},
+      {name:"HUAWEI nova 14 Pro",         inc:30000},
+      {name:"HUAWEI nova 14",             inc:30000},
+      {name:"HUAWEI nova Y73",            inc:15000},
+      {name:"HUAWEI nova Y74",            inc:15000},
+    ]},
+    { id:"we", label:"Wearables", color:"#1A4A7A", products:[
+      {name:"HUAWEI Watch Ultimate Green",inc:80000, premium:true},
+      {name:"HUAWEI Watch Fit 5 Pro",     inc:8000},
+      {name:"HUAWEI Watch GT Runner 2",   inc:9000},
+      {name:"HUAWEI Watch Fit 5",         inc:7000},
+      {name:"HUAWEI WATCH 5",             inc:6000},
+      {name:"HUAWEI Watch D2",            inc:6000},
+      {name:"HUAWEI GT 6 PRO",            inc:2000},
+      {name:"HUAWEI GT 6",                inc:2000},
+    ]},
+    { id:"ea", label:"Earphones", color:"#1A7A4A", products:[
+      {name:"Huawei Freebuds Pro 5",      inc:5000},
+      {name:"Huawei Freeclip 2",          inc:4000},
+    ]},
+    { id:"tb", label:"Tab", color:"#6C3483", products:[
+      {name:"MatePad 11.5 Taoxingzhi 256GB",           inc:25000},
+      {name:"MatePad 11.5 Taoxingzhi 128GB + Keyboard",inc:15000},
+      {name:"MatePad 11.5 Taoxingzhi 128GB",           inc:10000},
+      {name:"Huawei MatePad SE 11",                    inc:8000,  exclusive:"Solo OM"},
+    ]},
+  ],
+  CLARO: [
+    { id:"sp", label:"Smartphones", color:"#C0392B", products:[
+      {name:"HUAWEI Mate X6",             inc:140000, premium:true},
+      {name:"HUAWEI Pura 80 Ultra",       inc:100000, premium:true},
+      {name:"HUAWEI Mate 80 Pro",         inc:90000,  premium:true},
+      {name:"HUAWEI Pura 80 Pro",         inc:80000},
+      {name:"HUAWEI Pura 80",             inc:60000},
+      {name:"HUAWEI nova 15 max",         inc:55000},
+      {name:"HUAWEI nova 14 Pro",         inc:30000},
+      {name:"HUAWEI nova 14",             inc:30000},
+      {name:"HUAWEI nova Y73",            inc:15000},
+      {name:"HUAWEI nova Y74",            inc:15000},
+    ]},
+    { id:"we", label:"Wearables", color:"#1A4A7A", products:[
+      {name:"HUAWEI Watch Ultimate Green",inc:80000, premium:true},
+      {name:"HUAWEI Watch Fit 5 Pro",     inc:8000},
+      {name:"HUAWEI Watch GT Runner 2",   inc:9000},
+      {name:"HUAWEI Watch Fit 5",         inc:7000},
+      {name:"HUAWEI WATCH 5",             inc:6000},
+      {name:"HUAWEI Watch D2",            inc:6000},
+      {name:"HUAWEI GT 6 PRO",            inc:2000},
+      {name:"HUAWEI GT 6",                inc:2000},
+    ]},
+    { id:"ea", label:"Earphones", color:"#1A7A4A", products:[
+      {name:"Huawei Freebuds Pro 5",      inc:5000},
+      {name:"Huawei Freeclip 2",          inc:4000},
+    ]},
+    { id:"tb", label:"Tab", color:"#6C3483", products:[
+      {name:"MatePad 11.5 Taoxingzhi 256GB",           inc:25000},
+      {name:"MatePad 11.5 Taoxingzhi 128GB + Keyboard",inc:15000},
+      {name:"MatePad 11.5 Taoxingzhi 128GB",           inc:10000},
+    ]},
+  ]
+};
+
+let currentCanal = "OM";
+
+const cop = n => "$" + Math.round(n).toLocaleString("es-CO");
+
+function setCanal(canal) {
+  currentCanal = canal;
+  document.getElementById("btn-om").classList.toggle("active", canal==="OM");
+  document.getElementById("btn-claro").classList.toggle("active", canal==="CLARO");
+  document.getElementById("inp-canal").value = canal === "OM" ? "Open Market" : "Claro";
+  buildUI();
+  recalc();
+}
+
+function buildUI() {
+  const cont = document.getElementById("cat-container");
+  cont.innerHTML = "";
+  const cats = CATALOG[currentCanal];
+
+  cats.forEach(cat => {
+    const sec = document.createElement("div");
+    sec.className = "cat-section";
+
+    const hdr = document.createElement("div");
+    hdr.className = "cat-header";
+    hdr.style.background = cat.color;
+    hdr.innerHTML = `<div class="cat-dot" style="background:rgba(255,255,255,0.5)"></div>
+      <div class="cat-name">${cat.label}</div>
+      <span class="cat-total-lbl">Total:</span>
+      <span class="cat-total-val" id="ct-${cat.id}">$0</span>
+      <span class="cat-chevron" id="chev-${cat.id}">▼</span>`;
+    hdr.onclick = () => toggle(cat.id);
+
+    const body = document.createElement("div");
+    body.id = "body-" + cat.id;
+
+    const tbl = document.createElement("table");
+    tbl.className = "prod-table";
+    tbl.innerHTML = `<thead><tr>
+      <th class="col-hdr">Modelo</th>
+      <th class="col-hdr">Incentivo c/u</th>
+      <th class="col-hdr">Desde 1ª und</th>
+      <th class="col-hdr">Unidades vendidas</th>
+      <th class="col-hdr" style="text-align:right">Total incentivo</th>
+    </tr></thead><tbody id="tb-${cat.id}"></tbody>`;
+
+    const tbody = tbl.querySelector("tbody");
+    cat.products.forEach((p, i) => {
+      const tr = document.createElement("tr");
+      tr.className = "prod-row";
+      const excl = p.exclusive ? `<span class="excl-badge">${p.exclusive}</span>` : "";
+      tr.innerHTML = `
+        <td class="prod-name-cell ${p.premium?'premium':''}">${p.name}${excl}</td>
+        <td class="prod-inc-cell" style="color:${cat.color}">${cop(p.inc)}</td>
+        <td class="units-cell"><span class="prod-tag tag-active">Sí ✓</span></td>
+        <td class="units-cell"><input type="number" class="units-input" min="0" step="1" value="0"
+          id="u-${cat.id}-${i}" oninput="onInput(this)" /></td>
+        <td class="total-cell" id="t-${cat.id}-${i}">—</td>`;
+      tbody.appendChild(tr);
+    });
+
+    body.appendChild(tbl);
+    sec.appendChild(hdr);
+    sec.appendChild(body);
+    cont.appendChild(sec);
+  });
+}
+
+function toggle(id) {
+  const body = document.getElementById("body-"+id);
+  const chev = document.getElementById("chev-"+id);
+  const open = body.style.display !== "none";
+  body.style.display = open ? "none" : "";
+  chev.textContent = open ? "▶" : "▼";
+}
+
+function onInput(inp) {
+  const v = parseInt(inp.value)||0;
+  inp.classList.toggle("has-value", v > 0);
+  recalc();
+}
+
+function recalc() {
+  let totSP=0,uSP=0,totWE=0,uWE=0,totET=0,uET=0;
+  const cats = CATALOG[currentCanal];
+  cats.forEach(cat => {
+    let catTot=0, catU=0;
+    cat.products.forEach((p,i) => {
+      const inp = document.getElementById(`u-${cat.id}-${i}`);
+      const u = inp ? (parseInt(inp.value)||0) : 0;
+      const tot = u * p.inc;
+      catTot += tot; catU += u;
+      const td = document.getElementById(`t-${cat.id}-${i}`);
+      if (td) { td.textContent = tot>0 ? cop(tot) : "—"; td.className = tot>0 ? "total-cell has-value" : "total-cell"; }
+    });
+    const ctEl = document.getElementById(`ct-${cat.id}`);
+    if (ctEl) ctEl.textContent = cop(catTot);
+    if (cat.id==="sp"){totSP=catTot;uSP=catU;}
+    else if (cat.id==="we"){totWE=catTot;uWE=catU;}
+    else {totET+=catTot;uET+=catU;}
+  });
+  const grand=totSP+totWE+totET, uAll=uSP+uWE+uET;
+  document.getElementById("sum-sp").textContent=cop(totSP);
+  document.getElementById("sum-we").textContent=cop(totWE);
+  document.getElementById("sum-et").textContent=cop(totET);
+  document.getElementById("sum-total").textContent=cop(grand);
+  document.getElementById("sun-sp").textContent=uSP+" unid.";
+  document.getElementById("sun-we").textContent=uWE+" unid.";
+  document.getElementById("sun-et").textContent=uET+" unid.";
+  document.getElementById("sun-total").textContent=uAll+" unidades vendidas";
+}
+
+function resetAll() {
+  const cats = CATALOG[currentCanal];
+  cats.forEach(cat => cat.products.forEach((_,i)=>{
+    const inp=document.getElementById(`u-${cat.id}-${i}`);
+    if(inp){inp.value=0;inp.classList.remove("has-value");}
+  }));
+  recalc();
+}
+
+function openSummary() {
+  const nombre=document.getElementById("inp-nombre").value||"Promotor";
+  const canal=document.getElementById("inp-canal").value;
+  const pdv=document.getElementById("inp-pdv").value;
+  document.getElementById("modal-sub").textContent=`${nombre}${canal?" · "+canal:""}${pdv?" · "+pdv:""} — Julio 2026`;
+  let html="", grand=0;
+  const cats=CATALOG[currentCanal];
+  cats.forEach(cat=>{
+    let catTot=0,rows="";
+    cat.products.forEach((p,i)=>{
+      const inp=document.getElementById(`u-${cat.id}-${i}`);
+      const u=inp?(parseInt(inp.value)||0):0;
+      if(u>0){const tot=u*p.inc;catTot+=tot;rows+=`<div class="modal-row"><span class="mr-name">${p.name}</span><span class="mr-units">${u} und × ${cop(p.inc)}</span><span class="mr-total">${cop(tot)}</span></div>`;}
+    });
+    if(rows){html+=`<div class="modal-section"><h3 style="color:${cat.color}">${cat.label} — ${cop(catTot)}</h3>${rows}</div>`;grand+=catTot;}
+  });
+  if(!html)html=`<p style="color:var(--muted);font-size:13px;text-align:center;padding:2rem 0;">Ingresa unidades vendidas para ver el resumen.</p>`;
+  html+=`<div class="modal-grand"><span class="mg-label">Total incentivos julio</span><span class="mg-val">${cop(grand)}</span></div>`;
+  document.getElementById("modal-body").innerHTML=html;
+  document.getElementById("modal").classList.add("open");
+}
+
+function closeModal(e){ if(e.target===document.getElementById("modal")) document.getElementById("modal").classList.remove("open"); }
+
+function copySummary(){
+  const nombre=document.getElementById("inp-nombre").value||"Promotor";
+  const canal=document.getElementById("inp-canal").value;
+  let lines=[`RESUMEN INCENTIVOS HUAWEI — JULIO 2026`,`Promotor: ${nombre}${canal?" | "+canal:""}\n`];
+  let grand=0;
+  const cats=CATALOG[currentCanal];
+  cats.forEach(cat=>{
+    let catTot=0,catLines=[];
+    cat.products.forEach((p,i)=>{
+      const inp=document.getElementById(`u-${cat.id}-${i}`);
+      const u=inp?(parseInt(inp.value)||0):0;
+      if(u>0){const tot=u*p.inc;catTot+=tot;catLines.push(`  ${p.name}: ${u} und × ${cop(p.inc)} = ${cop(tot)}`);}
+    });
+    if(catLines.length){lines.push(`${cat.label.toUpperCase()} — ${cop(catTot)}`);catLines.forEach(l=>lines.push(l));lines.push("");grand+=catTot;}
+  });
+  lines.push(`TOTAL INCENTIVOS: ${cop(grand)}`);
+  navigator.clipboard.writeText(lines.join("\n")).then(()=>{
+    const btn=event.target; btn.textContent="✓ Copiado"; setTimeout(()=>btn.textContent="📋 Copiar resumen",2000);
+  });
+}
+
+// Init
+buildUI();
+recalc();
+document.getElementById("inp-canal").value = "Open Market";
+</script>
+</body>
+</html>
